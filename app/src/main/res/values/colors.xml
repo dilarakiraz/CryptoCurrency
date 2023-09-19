@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="grey">#1c1c18</color>
-    <color name="gold">#a4a823</color>
+    <color name="gold">#C5A939</color>
     <color name="purple">#B835FE</color>
     <color name="green">#4FC281</color>
     <color name="red">#D6455D</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="dark_gold">#645209</color>
+    <color name="royal_blue_dark">#020570</color>
+    <color name="dark_blue"> #373A9F</color>
+
 </resources>
