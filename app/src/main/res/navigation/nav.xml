@@ -18,6 +18,6 @@
     <fragment
         android:id="@+id/watchListFragment"
         android:name="com.dilarakiraz.myapplication.fragment.WatchListFragment"
-        android:label="fragment_watch_list"
+        android:label="fragment_watchlist"
         tools:layout="@layout/fragment_watchlist" />
 </navigation>

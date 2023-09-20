@@ -33,9 +33,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.marketFragment -> replaceFragment(MarketFragment())
                 R.id.watchListFragment -> replaceFragment(WatchListFragment())
 
-                else ->{
-
-                }
+                else ->{}
             }
             true
         }
