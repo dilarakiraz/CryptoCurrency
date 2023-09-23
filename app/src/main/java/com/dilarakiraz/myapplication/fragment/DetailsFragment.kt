@@ -15,21 +15,23 @@ import com.dilarakiraz.myapplication.models.CryptoCurrency
 
 class DetailsFragment : Fragment() {
     lateinit var binding: FragmentDetailsBinding
-    private val item : DetailsFragmentArgs by navArgs()
+    private val args : DetailsFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding =FragmentDetailsBinding.inflate(layoutInflater)
+        binding =FragmentDetailsBinding.inflate(inflater, container, false)
 
-        val data:CryptoCurrency = item.data!!
+        val data:CryptoCurrency = args.data!!
 
         setupDetails(data)
-        loadChart(data)
+//        loadChart(data)
         setButtonOnClick(data)
 
         return binding.root
     }
+
+
 
     private fun setButtonOnClick(data: CryptoCurrency) {
         val oneMonth = binding.button
@@ -40,15 +42,18 @@ class DetailsFragment : Fragment() {
         val fifteenMinute = binding.button5
 
         val clickListener = View.OnClickListener {
-            when(it.id){
-                fifteenMinute.id -> loadChartData(it,"15",item,oneDay,oneMonth,oneWeek,fourHour,oneHour)
-                oneHour.id -> loadChartData(it,"1H",item,oneDay,oneMonth,oneWeek,fourHour,fifteenMinute)
-                fourHour.id -> loadChartData(it,"4H",item,oneDay,oneMonth,oneWeek,fifteenMinute,oneHour)
-                oneDay.id -> loadChartData(it,"D",item,fifteenMinute,oneMonth,oneWeek,fourHour,oneHour)
-                oneWeek.id -> loadChartData(it,"W",item,oneDay,oneMonth,fifteenMinute,fourHour,oneHour)
-                oneMonth.id -> loadChartData(it,"M",item,oneDay,fifteenMinute,oneWeek,fourHour,oneHour)
-
+            val interval = when (it.id) {
+                fifteenMinute.id -> "15"
+                oneHour.id -> "1H"
+                fourHour.id -> "4H"
+                oneDay.id -> "D"
+                oneWeek.id -> "W"
+                oneMonth.id -> "M"
+                else -> "15" // Varsayılan olarak 15 dakika
             }
+            loadChart(data, interval)
+            disableButton(oneDay, oneMonth, oneWeek, fourHour, oneHour, fifteenMinute, it as AppCompatButton)
+            it.setBackgroundResource(R.drawable.active_button)
         }
         fifteenMinute.setOnClickListener (clickListener)
         oneHour.setOnClickListener(clickListener)
@@ -58,48 +63,41 @@ class DetailsFragment : Fragment() {
         oneMonth.setOnClickListener(clickListener)
 
     }
-
-    private fun loadChartData(
-        it: View?,
-        s: String,
-        item: DetailsFragmentArgs,
-        oneDay: AppCompatButton,
-        oneMonth: AppCompatButton,
-        oneWeek: AppCompatButton,
-        fourHour: AppCompatButton,
-        oneHour: AppCompatButton
-    ) {
-        disableButton(oneDay,oneMonth,oneWeek,fourHour,oneHour)
-        it!!.setBackgroundResource(R.drawable.active_button)
+    private fun loadChart(data: CryptoCurrency, interval: String) {
         binding.detaillChartWebView.settings.javaScriptEnabled = true
-        binding.detaillChartWebView.setLayerType(View.LAYER_TYPE_SOFTWARE,null)
+        binding.detaillChartWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
         binding.detaillChartWebView.loadUrl(
-
-            "https://s.tradingview.com/widgetembed/?frameElementId=tradingview_76d87&symbol" + item.symbol
-                .toString() + "USD&interval=" + s + "&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&hideideas=1&theme=Dark&style=1&timezone=Etc%2FUTC&studies_overrides={}&overrides={}&enabled_features=[]&disabled_features=[]&locale=en&utm_source=coinmarketcap.com&utm_medium=widget&utm_campaign=chart&utm_term=BTCUSDT"
+            "https://s.tradingview.com/widgetembed/?frameElementId=tradingview_76d87&symbol=${data.symbol}USD&interval=1D&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&hideideas=1&theme=Dark&style=1&timezone=Etc%2FUTC&studies_overrides={}&overrides={}&enabled_features=[]&disabled_features=[]&locale=en&utm_source=coinmarketcap.com&utm_medium=widget&utm_campaign=chart&utm_term=BTCUSDT"
         )
     }
 
-    private fun disableButton(oneDay: AppCompatButton, oneMonth: AppCompatButton, oneWeek: AppCompatButton, fourHour: AppCompatButton, oneHour: AppCompatButton) {
-        oneDay.background = null
-        oneMonth.background=null
-        oneWeek.background=null
-        fourHour.background=null
-        oneHour.background=null
+//    private fun loadChartData(interval: String, data: CryptoCurrency) {
+//        binding.detaillChartWebView.settings.javaScriptEnabled = true
+//        binding.detaillChartWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+//
+//        binding.detaillChartWebView.loadUrl(
+//            "https://s.tradingview.com/widgetembed/?frameElementId=tradingview_76d87&symbol=${data.symbol}USD&interval=$interval&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&hideideas=1&theme=Dark&style=1&timezone=Etc%2FUTC&studies_overrides={}&overrides={}&enabled_features=[]&disabled_features=[]&locale=en&utm_source=coinmarketcap.com&utm_medium=widget&utm_campaign=chart&utm_term=BTCUSDT"
+//        )
+//    }
+
+    private fun disableButton(vararg buttons: AppCompatButton) {
+        for (button in buttons) {
+            button.background = null
+        }
     }
 
 
-    private fun loadChart(item: CryptoCurrency) {
-        binding.detaillChartWebView.settings.javaScriptEnabled = true
-        binding.detaillChartWebView.setLayerType(View.LAYER_TYPE_SOFTWARE,null)
-
-        binding.detaillChartWebView.loadUrl(
-
-            "https://s.tradingview.com/widgetembed/?frameElementId=tradingview_76d87&symbol" + item.symbol
-                .toString() + "USD&interval=&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&hideideas=1&theme=Dark&style=1&timezone=Etc%2FUTC&studies_overrides={}&overrides={}&enabled_features=[]&disabled_features=[]&locale=en&utm_source=coinmarketcap.com&utm_medium=widget&utm_campaign=chart&utm_term=BTCUSDT"
-        )
-    }
+//    private fun loadChart(item: CryptoCurrency) {
+//        binding.detaillChartWebView.settings.javaScriptEnabled = true
+//        binding.detaillChartWebView.setLayerType(View.LAYER_TYPE_SOFTWARE,null)
+//
+//        binding.detaillChartWebView.loadUrl(
+//
+//            "https://s.tradingview.com/widgetembed/?frameElementId=tradingview_76d87&symbol" + item.symbol
+//                .toString() + "USD&interval=&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&hideideas=1&theme=Dark&style=1&timezone=Etc%2FUTC&studies_overrides={}&overrides={}&enabled_features=[]&disabled_features=[]&locale=en&utm_source=coinmarketcap.com&utm_medium=widget&utm_campaign=chart&utm_term=BTCUSDT"
+//        )
+//    }
 
     private fun setupDetails(data:CryptoCurrency) {
         binding.detailSymbolTextView.text = data.symbol
