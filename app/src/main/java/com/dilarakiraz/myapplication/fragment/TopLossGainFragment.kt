@@ -56,13 +56,19 @@ class TopLossGainFragment : Fragment() {
                         for(i in 0..9){
                             list.add(dataItem[i])
                         }
-                        binding.topGainLoseRecyclerView.adapter=MarketAdapter(requireContext(),list)
+                        binding.topGainLoseRecyclerView.adapter=MarketAdapter(
+                            requireContext(),
+                            list,
+                            "home")
                     }else{
                         list.clear()
                         for(i in 0..9){
                             list.add(dataItem[dataItem.size-1-i])
                         }
-                        binding.topGainLoseRecyclerView.adapter=MarketAdapter(requireContext(),list)
+                        binding.topGainLoseRecyclerView.adapter=MarketAdapter(
+                            requireContext(),
+                            list,
+                            "home")
                     }
                 }
             }
